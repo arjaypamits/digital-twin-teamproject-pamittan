@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { sanitizeMessages } from '@/lib/prompt-guard';
 
+export const runtime = 'edge';
+
 const SYSTEM_PROMPT = `You are Digital Twin, an expert AI career coach and guidance agent. You specialize in:
 
 **Career Profile Analysis**: Ask targeted questions about background, years of experience, industry, current role, education, and career aspirations. Build a comprehensive profile and deliver personalized, specific insights.
@@ -40,7 +42,7 @@ export async function POST(req: NextRequest) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'openai/gpt-4-turbo',
+      model: 'openai/gpt-4o-mini',
       messages: [
         { role: 'system', content: SYSTEM_PROMPT },
         ...messages,
