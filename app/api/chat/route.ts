@@ -3,6 +3,8 @@ import { sanitizeMessages } from '@/lib/prompt-guard';
 import { MCP_TOOLS, executeMcpTool } from '@/lib/mcp-tools';
 import { TEAM_MEMBERS, SHARED_EDUCATION, SHARED_CERTIFICATIONS, SHARED_SEMINARS, SHARED_SKILLS } from '@/lib/members';
 
+// AI chat route — handles member persona switching and MCP tool calls
+
 export const runtime = 'edge';
 
 function buildSystemPrompt(): string {
