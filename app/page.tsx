@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Github, User, Zap, Pencil, Trash2, Plus, X } from 'lucide-react';
+import { Send, Github, User, Zap, Pencil, Trash2, Plus, X, Moon, Sun } from 'lucide-react';
+import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -71,6 +72,7 @@ const EMPTY_FORM: Omit<Member, 'id'> = {
 export default function ChatPage() {
   const [currentPage, setCurrentPage] = useState<PageView>('home');
   const [scrolled, setScrolled] = useState(false);
+  const { theme, setTheme } = useTheme();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -182,9 +184,9 @@ export default function ChatPage() {
   const hasStarted = messages.length > 1;
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-screen bg-white dark:bg-gray-950">
       {/* Header */}
-      <header className={`bg-white border-b border-gray-200 sticky top-0 z-40 transition-shadow duration-200 ${scrolled ? 'shadow-md' : 'shadow-none'}`}>
+      <header className={`bg-white dark:bg-gray-950 border-b border-gray-200 dark:border-gray-800 sticky top-0 z-40 transition-shadow duration-200 ${scrolled ? 'shadow-md dark:shadow-gray-900' : 'shadow-none'}`}>
         <div className="max-w-5xl mx-auto px-8 py-5 flex items-center justify-between">
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => setCurrentPage('home')}>
             <div className="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-base">DT</div>
@@ -199,21 +201,30 @@ export default function ChatPage() {
               <button
                 key={page}
                 onClick={() => setCurrentPage(page)}
-                className={`capitalize transition-colors ${currentPage === page ? 'text-blue-900 font-bold' : 'text-gray-700 hover:text-blue-900'}`}
+                className={`capitalize transition-colors ${currentPage === page ? 'text-blue-700 dark:text-blue-400 font-bold' : 'text-gray-700 dark:text-gray-300 hover:text-blue-900 dark:hover:text-blue-400'}`}
               >
                 {page}
               </button>
             ))}
           </nav>
 
-          <a href="https://github.com/arjaypamits/digital-twin-teamproject-pamittan" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-gray-100 rounded-lg transition-colors text-gray-700 hover:text-blue-900">
-            <Github size={20} />
-          </a>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+              className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-700 dark:text-gray-300"
+              aria-label="Toggle theme"
+            >
+              {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <a href="https://github.com/arjaypamits/digital-twin-teamproject-pamittan" target="_blank" rel="noopener noreferrer" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors text-gray-700 dark:text-gray-300 hover:text-blue-900">
+              <Github size={20} />
+            </a>
+          </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main ref={mainRef} className="flex-1 flex flex-col w-full px-8 py-6 overflow-auto">
+      <main ref={mainRef} className="flex-1 flex flex-col w-full px-8 py-6 overflow-auto bg-white dark:bg-gray-950">
         <div className="max-w-5xl mx-auto w-full flex flex-col h-full">
 
           {/* HOME PAGE */}
@@ -222,10 +233,10 @@ export default function ChatPage() {
 
               {/* Hero — compact, only before chat starts */}
               {!hasStarted && (
-                <div className="mb-4 px-5 py-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100 flex items-center justify-between flex-shrink-0">
+                <div className="mb-4 px-5 py-4 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-xl border border-blue-100 dark:border-blue-900 flex items-center justify-between flex-shrink-0">
                   <div>
-                    <h2 className="text-xl font-bold text-gray-900">Digital Twin</h2>
-                    <p className="text-xs text-gray-500 mt-0.5">Meet the team — talk to any member and get to know them personally.</p>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Digital Twin</h2>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Meet the team — talk to any member and get to know them personally.</p>
                   </div>
                   <div className="w-9 h-9 bg-blue-900 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0">DT</div>
                 </div>
@@ -256,7 +267,7 @@ export default function ChatPage() {
                       <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
                         message.sender === 'user'
                           ? 'bg-blue-900 text-white rounded-br-sm shadow-sm'
-                          : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                          : 'bg-gray-100 dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-bl-sm'
                       }`}>
                         {message.text}
                       </div>
@@ -270,21 +281,21 @@ export default function ChatPage() {
                 {/* Member avatar cards — only before chat starts */}
                 {!hasStarted && (
                   <div className="flex flex-col items-center gap-3 py-2">
-                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Choose a member to chat with</p>
+                    <p className="text-xs text-gray-400 dark:text-gray-500 font-medium uppercase tracking-wider">Choose a member to chat with</p>
                     <div className="flex gap-4 flex-wrap justify-center">
                       {QUICK_ACTIONS.map((action) => (
                         <button
                           key={action.title}
                           onClick={() => sendMessage(action.prompt)}
                           disabled={isLoading}
-                          className="flex flex-col items-center gap-2 p-4 w-36 border border-gray-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 hover:shadow-md transition-all disabled:opacity-50 group"
+                          className="flex flex-col items-center gap-2 p-4 w-36 border border-gray-200 dark:border-gray-700 rounded-2xl hover:border-blue-300 dark:hover:border-blue-600 hover:bg-blue-50 dark:hover:bg-blue-950 hover:shadow-md transition-all disabled:opacity-50 group bg-white dark:bg-gray-900"
                         >
                           <div className="w-14 h-14 rounded-full bg-blue-900 group-hover:bg-blue-800 flex items-center justify-center text-white font-bold text-base transition-colors shadow-sm">
                             {action.initials}
                           </div>
                           <div className="text-center">
-                            <p className="text-xs font-bold text-gray-900 leading-tight">{action.memberName}</p>
-                            <p className="text-xs text-gray-400 mt-0.5">{action.role}</p>
+                            <p className="text-xs font-bold text-gray-900 dark:text-white leading-tight">{action.memberName}</p>
+                            <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">{action.role}</p>
                           </div>
                         </button>
                       ))}
@@ -295,7 +306,7 @@ export default function ChatPage() {
                 {isLoading && (
                   <div className="flex items-end gap-2.5">
                     <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">DT</div>
-                    <div className="bg-gray-100 px-4 py-3 rounded-2xl rounded-bl-sm">
+                    <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 rounded-2xl rounded-bl-sm">
                       <div className="flex gap-1.5 items-center h-4">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
@@ -309,14 +320,14 @@ export default function ChatPage() {
 
               {/* Input */}
               <div className="pt-4 flex-shrink-0">
-                <form onSubmit={handleSendMessage} className="flex gap-3 items-center bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 shadow-sm focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                <form onSubmit={handleSendMessage} className="flex gap-3 items-center bg-gray-50 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl px-4 py-2.5 shadow-sm focus-within:border-blue-300 dark:focus-within:border-blue-600 focus-within:ring-2 focus-within:ring-blue-100 dark:focus-within:ring-blue-900 transition-all">
                   <Input
                     type="text"
                     placeholder="Type who you want to talk to or ask a question..."
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     disabled={isLoading}
-                    className="flex-1 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0 px-0 py-0 placeholder:text-gray-400"
+                    className="flex-1 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0 px-0 py-0 placeholder:text-gray-400 dark:text-white dark:placeholder:text-gray-500"
                   />
                   <Button
                     type="submit"
@@ -333,7 +344,7 @@ export default function ChatPage() {
           {/* PERSONA PAGE */}
           {currentPage === 'persona' && (
             <div className="flex flex-col gap-6 overflow-y-auto">
-              <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100 flex items-center justify-between">
+              <div className="p-6 bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950 rounded-xl border border-blue-100 dark:border-blue-900 flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-1">Team Personas</h2>
                   <p className="text-sm text-gray-600">Meet the people behind Digital Twin</p>
@@ -375,7 +386,7 @@ export default function ChatPage() {
                       <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest mb-3">{dept}</h3>
                       <div className="grid grid-cols-4 gap-4">
                         {deptMembers.map((m) => (
-                          <div key={m.id} className="relative bg-white border border-gray-200 rounded-xl p-4 hover:border-blue-200 hover:shadow-sm transition-all">
+                          <div key={m.id} className="relative bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-xl p-4 hover:border-blue-200 dark:hover:border-blue-700 hover:shadow-sm transition-all">
                             <div className="absolute top-3 right-3 flex gap-1">
                               <button onClick={() => openEdit(m)} className="p-1 hover:bg-gray-100 rounded text-gray-400 hover:text-gray-700 transition-colors"><Pencil size={13} /></button>
                               <button onClick={() => handleDelete(m.id)} className="p-1 hover:bg-red-50 rounded text-gray-400 hover:text-red-500 transition-colors"><Trash2 size={13} /></button>
@@ -385,8 +396,8 @@ export default function ChatPage() {
                                 {getInitials(m.name)}
                               </div>
                               <div className="min-w-0">
-                                <p className="text-sm font-bold text-gray-900 leading-tight truncate pr-8">{m.name}</p>
-                                <p className="text-xs text-gray-500 truncate">{m.role}</p>
+                                <p className="text-sm font-bold text-gray-900 dark:text-white leading-tight truncate pr-8">{m.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{m.role}</p>
                               </div>
                             </div>
                             <span className={`inline-block text-xs font-medium px-2 py-0.5 rounded-full mb-2 ${DEPT_TAG_COLORS[dept] ?? 'bg-gray-100 text-gray-700'}`}>{dept}</span>
@@ -576,35 +587,35 @@ export default function ChatPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200">
+      <footer className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-800">
         <div className="max-w-5xl mx-auto px-8 py-5 flex flex-col gap-3">
           <div className="grid grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">AI Chat Digital Twin</h3>
+              <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">AI Chat Digital Twin</h3>
               <ul className="flex flex-wrap gap-x-3 gap-y-1">
-                <li className="text-xs text-gray-600 font-medium">John Michael Talbo</li>
-                <li className="text-xs text-gray-600 font-medium">Arjay Pamittan</li>
-                <li className="text-xs text-gray-600 font-medium">Marc Ruben Lucas</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">John Michael Talbo</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Arjay Pamittan</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Marc Ruben Lucas</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">UI</h3>
+              <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">UI</h3>
               <ul className="flex flex-wrap gap-x-3 gap-y-1">
-                <li className="text-xs text-gray-600 font-medium">Aeron Garma</li>
-                <li className="text-xs text-gray-600 font-medium">Prince Ethan Macadangdang</li>
-                <li className="text-xs text-gray-600 font-medium">Peter Cauan</li>
-                <li className="text-xs text-gray-600 font-medium">Michael Josh Jacinto</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Aeron Garma</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Prince Ethan Macadangdang</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Peter Cauan</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Michael Josh Jacinto</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Database Back End</h3>
+              <h3 className="text-xs font-bold text-gray-500 dark:text-gray-400 mb-2 uppercase tracking-wider">Database Back End</h3>
               <ul className="flex flex-wrap gap-x-3 gap-y-1">
-                <li className="text-xs text-gray-600 font-medium">Aaron Clerf Sarambao</li>
-                <li className="text-xs text-gray-600 font-medium">Christian Jerald Martinez</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Aaron Clerf Sarambao</li>
+                <li className="text-xs text-gray-600 dark:text-gray-400 font-medium">Christian Jerald Martinez</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-3 text-xs text-gray-400 text-center">
+          <div className="border-t border-gray-200 dark:border-gray-800 pt-3 text-xs text-gray-400 dark:text-gray-600 text-center">
             <p>Built with precision. Powered by AI. © 2024 Digital Twin</p>
           </div>
         </div>
