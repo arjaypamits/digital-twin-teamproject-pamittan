@@ -65,6 +65,10 @@ ${seminarList}
 const SYSTEM_PROMPT = buildSystemPrompt();
 
 export async function POST(req: NextRequest) {
+  if (!process.env.OPENROUTER_API_KEY) {
+    return NextResponse.json({ error: 'Service not configured.' }, { status: 503 });
+  }
+
   let body: unknown;
   try {
     body = await req.json();

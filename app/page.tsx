@@ -106,6 +106,7 @@ export default function ChatPage() {
     setMembersLoading(true);
     try {
       const res = await fetch('/api/members');
+      if (!res.ok) throw new Error('Failed to load members');
       const data = await res.json();
       setMembers(data);
     } finally {
@@ -138,8 +139,9 @@ export default function ChatPage() {
       ];
       const res = await fetch('/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ messages: apiMessages }) });
       const data = await res.json();
+      const replyText = res.ok ? (data.reply ?? 'No response.') : (data.error ?? 'Something went wrong.');
       const mcpToolsUsed: string[] = data.mcp_tools_used ?? [];
-      setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), text: data.reply ?? data.error ?? 'Something went wrong.', sender: 'ai', timestamp: new Date(), mcpToolsUsed }]);
+      setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), text: replyText, sender: 'ai', timestamp: new Date(), mcpToolsUsed }]);
     } catch {
       setMessages((prev) => [...prev, { id: (Date.now() + 1).toString(), text: 'Sorry, I encountered an error. Please try again.', sender: 'ai', timestamp: new Date() }]);
     } finally {
@@ -163,9 +165,11 @@ export default function ChatPage() {
     setFormLoading(true);
     try {
       if (editingMember) {
-        await fetch(`/api/members/${editingMember.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+        const res = await fetch(`/api/members/${editingMember.id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+        if (!res.ok) throw new Error('Failed to update member');
       } else {
-        await fetch('/api/members', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+        const res = await fetch('/api/members', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) });
+        if (!res.ok) throw new Error('Failed to add member');
       }
       closeForm();
       fetchMembers();
@@ -176,8 +180,8 @@ export default function ChatPage() {
 
   const handleDelete = async (id: number) => {
     if (!confirm('Delete this member?')) return;
-    await fetch(`/api/members/${id}`, { method: 'DELETE' });
-    fetchMembers();
+    const res = await fetch(`/api/members/${id}`, { method: 'DELETE' });
+    if (res.ok) fetchMembers();
   };
 
   const departments = ['AI Chat Digital Twin', 'UI', 'Database Back End'];

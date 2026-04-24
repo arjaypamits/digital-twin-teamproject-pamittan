@@ -1,6 +1,10 @@
 import { neon } from '@neondatabase/serverless';
 
-export const sql = neon(process.env.DATABASE_URL!);
+if (!process.env.DATABASE_URL) {
+  throw new Error('DATABASE_URL environment variable is not set.');
+}
+
+export const sql = neon(process.env.DATABASE_URL);
 
 export async function initDB() {
   await sql`
@@ -21,7 +25,7 @@ export async function initDB() {
   `;
 
   const existing = await sql`SELECT COUNT(*) as count FROM members`;
-  if (Number(existing[0].count) === 0) {
+  if (Number(existing[0]?.count ?? 0) === 0) {
     await sql`
       INSERT INTO members (name, role, department, email, birth_date, birthplace, gender, citizenship, religion, address) VALUES
       ('John Michael Talbo',       'AI Chat Developer',   'AI Chat Digital Twin', '',                          '', '', '', '', '', ''),

@@ -310,8 +310,8 @@ function getMemberProfile(args: GetMemberProfileArgs): string {
     'aaron clerf sarambao': { name: 'Aaron Clerf Sarambao', department: 'Database Back End', role: 'Backend Developer', education: 'BS Information Technology — St. Paul University Philippines (2023–Present)', skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Next.js', 'SQL', 'Laravel', 'PostgreSQL'] },
     'christian jerald martinez': { name: 'Christian Jerald Martinez', department: 'Database Back End', role: 'Backend Developer', education: 'BS Information Technology — St. Paul University Philippines (2023–Present)', skills: ['HTML', 'CSS', 'JavaScript', 'React', 'Next.js', 'SQL', 'Laravel', 'PostgreSQL'] },
   };
-  const key = name.toLowerCase().replace(/prince\s+/i, '');
-  const found = Object.entries(members).find(([k]) => k.includes(key) || key.includes(k.split(' ')[0]));
+  const key = name.toLowerCase().replace(/\bprince\b\s*/i, '').trim();
+  const found = Object.entries(members).find(([k]) => k === key || k.includes(key) || key.includes(k));
   if (!found) return JSON.stringify({ error: `No member found matching "${name}"`, available_members: Object.values(members).map((m) => (m as Record<string, string>).name) });
   return JSON.stringify(found[1]);
 }
@@ -329,7 +329,8 @@ function recommendLearningResources(args: RecommendResourcesArgs): string {
     javascript: { free: [{ platform: 'javascript.info', url: 'javascript.info', description: 'The Modern JavaScript Tutorial', duration: 'Self-paced' }, { platform: 'freeCodeCamp', url: 'freecodecamp.org', description: 'JavaScript Algorithms and Data Structures', duration: '300 hours' }], paid: [{ platform: 'Udemy', course: 'The Complete JavaScript Course (Jonas Schmedtmann)', price: '~$15', duration: '69 hours', rating: '4.8/5' }] },
   };
   const key = skill.toLowerCase().replace(/\s+/g, '');
-  const found = resourceMap[key] ?? resourceMap[Object.keys(resourceMap).find((k) => key.includes(k) || k.includes(key)) ?? ''];
+  const matchedKey = Object.keys(resourceMap).find((k) => key === k || key.includes(k) || k.includes(key));
+  const found = resourceMap[key] ?? (matchedKey ? resourceMap[matchedKey] : undefined);
   if (!found) return JSON.stringify({ skill, level, message: `Search for "${skill} tutorial" on freeCodeCamp, Coursera, or Udemy. Filter by ${level} level.`, general_tips: ['Start with official documentation', 'Build a small project while learning', 'Join a community (Reddit, Discord)', 'Practice daily — even 30 minutes counts'] });
   return JSON.stringify({ skill, level, resources: found });
 }
