@@ -412,6 +412,38 @@ export default function ChatPage() {
                   <h3 className="text-lg font-bold text-gray-900 mb-3">Our Technology</h3>
                   <p className="text-sm text-gray-600 leading-relaxed">Built on GPT-4 Turbo via OpenRouter with an integrated MCP (Model Context Protocol) server, Digital Twin delivers state-of-the-art language understanding enhanced by structured career-coaching tools for accurate, data-driven guidance tailored to your unique situation.</p>
                 </div>
+
+                {/* Project Milestones */}
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-4">Project Milestones</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    {/* Week 6 */}
+                    <div className="bg-gray-900 rounded-2xl p-5 flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Week 6</span>
+                        <div className="w-7 h-7 rounded-lg bg-gray-700 flex items-center justify-center">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+                        </div>
+                      </div>
+                      <p className="text-white text-sm font-semibold leading-snug">
+                        Project Design: Design.md (AI/spec-driven), Implementation Plan, and Base Infrastructure
+                      </p>
+                    </div>
+
+                    {/* Week 7 */}
+                    <div className="bg-gray-900 rounded-2xl p-5 flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <span className="bg-purple-600 text-white text-xs font-bold px-3 py-1 rounded-full">Week 7</span>
+                        <div className="w-7 h-7 rounded-lg bg-gray-700 flex items-center justify-center">
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                        </div>
+                      </div>
+                      <p className="text-white text-sm font-semibold leading-snug">
+                        Interim Working Solution
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}
