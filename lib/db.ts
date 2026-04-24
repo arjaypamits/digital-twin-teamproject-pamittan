@@ -30,8 +30,16 @@ export async function initDB() {
       ('Aeron Garma',              'UI Designer',         'UI',                   'garmaaeron@gmail.com',       'July 10, 2005', 'Aparri, Cagayan', 'Male', 'Filipino', 'Roman Catholic', 'Casambalangan, Sta. Ana, Cagayan'),
       ('Prince Ethan Macadangdang','UI Designer',         'UI',                   'papa.ethanmac@gmail.com',    'February 2, 2005', 'Aparri, Cagayan', 'Male', 'Filipino', 'Roman Catholic', 'Gaggabutan West, Rizal, Cagayan'),
       ('Peter Cauan',              'UI Designer',         'UI',                   '',                          '', '', '', '', '', ''),
+      ('Michael Josh Jacinto',     'UI Designer',         'UI',                   '',                          '', '', '', '', '', ''),
       ('Aaron Clerf Sarambao',     'Backend Developer',   'Database Back End',    '',                          '', '', '', '', '', ''),
       ('Christian Jerald Martinez','Backend Developer',   'Database Back End',    '',                          '', '', '', '', '', '')
     `;
   }
+
+  // Ensure newly added members are present even if DB was already seeded
+  await sql`
+    INSERT INTO members (name, role, department, email, birth_date, birthplace, gender, citizenship, religion, address)
+    SELECT 'Michael Josh Jacinto', 'UI Designer', 'UI', '', '', '', '', '', '', ''
+    WHERE NOT EXISTS (SELECT 1 FROM members WHERE name = 'Michael Josh Jacinto')
+  `;
 }

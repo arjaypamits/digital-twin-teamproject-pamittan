@@ -469,6 +469,7 @@ export default function ChatPage() {
                 <li className="font-medium">Aeron Garma</li>
                 <li className="font-medium">Prince Ethan Macadangdang</li>
                 <li className="font-medium">Peter Cauan</li>
+                <li className="font-medium">Michael Josh Jacinto</li>
               </ul>
             </div>
             <div>
