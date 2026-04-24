@@ -31,15 +31,17 @@ type PageView = 'home' | 'features' | 'about' | 'contact' | 'persona';
 
 const QUICK_ACTIONS = [
   {
-    icon: User,
     title: 'Talk to Aeron Garma',
-    description: 'Chat with Aeron — UI Design team member',
+    memberName: 'Aeron Garma',
+    role: 'UI Designer',
+    initials: 'AG',
     prompt: "I want to talk to Aeron Garma.",
   },
   {
-    icon: User,
     title: 'Talk to Ethan Macadangdang',
-    description: 'Chat with Ethan — UI Design team member',
+    memberName: 'Ethan Macadangdang',
+    role: 'UI Designer',
+    initials: 'EM',
     prompt: "I want to talk to Ethan Macadangdang.",
   },
 ];
@@ -206,62 +208,112 @@ export default function ChatPage() {
 
           {/* HOME PAGE */}
           {currentPage === 'home' && (
-            <div className="max-w-4xl mx-auto w-full flex flex-col h-full">
-              <div className="flex-1 flex flex-col gap-4 overflow-y-auto mb-6">
-                {!hasStarted && (
-                  <div className="mb-2 p-6 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-1">Digital Twin</h2>
-                    <p className="text-sm text-gray-600">Meet the team — talk to any member and get to know them personally.</p>
+            <div className="max-w-4xl mx-auto w-full flex flex-col" style={{ height: 'calc(100vh - 88px - 48px)' }}>
+
+              {/* Hero — compact, only before chat starts */}
+              {!hasStarted && (
+                <div className="mb-4 px-5 py-4 bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl border border-blue-100 flex items-center justify-between flex-shrink-0">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900">Digital Twin</h2>
+                    <p className="text-xs text-gray-500 mt-0.5">Meet the team — talk to any member and get to know them personally.</p>
                   </div>
-                )}
+                  <div className="w-9 h-9 bg-blue-900 rounded-xl flex items-center justify-center text-white font-bold text-sm flex-shrink-0">DT</div>
+                </div>
+              )}
+
+              {/* Messages */}
+              <div className="flex-1 flex flex-col gap-5 overflow-y-auto pr-1 min-h-0">
+
                 {messages.map((message) => (
-                  <div key={message.id} className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className="flex flex-col gap-1 max-w-2xl">
+                  <div key={message.id} className={`flex items-end gap-2.5 ${message.sender === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+
+                    {/* Avatar */}
+                    {message.sender === 'ai' ? (
+                      <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-white text-xs font-bold flex-shrink-0 mb-0.5">DT</div>
+                    ) : (
+                      <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 mb-0.5">
+                        <User size={15} className="text-gray-500" />
+                      </div>
+                    )}
+
+                    <div className={`flex flex-col gap-1 max-w-[72%] ${message.sender === 'user' ? 'items-end' : 'items-start'}`}>
                       {message.mcpToolsUsed && message.mcpToolsUsed.length > 0 && (
                         <div className="flex items-center gap-1.5 px-1">
-                          <Zap size={12} className="text-emerald-600" />
+                          <Zap size={11} className="text-emerald-600" />
                           <span className="text-xs text-emerald-600 font-medium">MCP: {message.mcpToolsUsed.map((t) => t.replace(/_/g, ' ')).join(', ')}</span>
                         </div>
                       )}
-                      <div className={`px-5 py-3 rounded-2xl text-sm leading-relaxed font-medium whitespace-pre-wrap ${message.sender === 'user' ? 'bg-blue-900 text-white rounded-br-none shadow-md' : 'bg-gray-100 text-gray-900 rounded-bl-none'}`}>
+                      <div className={`px-4 py-3 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap ${
+                        message.sender === 'user'
+                          ? 'bg-blue-900 text-white rounded-br-sm shadow-sm'
+                          : 'bg-gray-100 text-gray-800 rounded-bl-sm'
+                      }`}>
                         {message.text}
                       </div>
                     </div>
                   </div>
                 ))}
+
+                {/* Member avatar cards — only before chat starts */}
                 {!hasStarted && (
-                  <div className="grid grid-cols-2 gap-3 mt-2">
-                    {QUICK_ACTIONS.map((action) => {
-                      const Icon = action.icon;
-                      return (
-                        <button key={action.title} onClick={() => sendMessage(action.prompt)} disabled={isLoading} className="group text-left p-4 border border-gray-200 rounded-xl hover:border-blue-900 hover:bg-blue-50 transition-all disabled:opacity-50">
-                          <div className="flex items-center gap-3 mb-2">
-                            <div className="w-8 h-8 bg-blue-100 group-hover:bg-blue-200 rounded-lg flex items-center justify-center transition-colors"><Icon size={16} className="text-blue-900" /></div>
-                            <span className="text-sm font-bold text-gray-900">{action.title}</span>
+                  <div className="flex flex-col items-center gap-3 py-2">
+                    <p className="text-xs text-gray-400 font-medium uppercase tracking-wider">Choose a member to chat with</p>
+                    <div className="flex gap-4 flex-wrap justify-center">
+                      {QUICK_ACTIONS.map((action) => (
+                        <button
+                          key={action.title}
+                          onClick={() => sendMessage(action.prompt)}
+                          disabled={isLoading}
+                          className="flex flex-col items-center gap-2 p-4 w-36 border border-gray-200 rounded-2xl hover:border-blue-300 hover:bg-blue-50 hover:shadow-md transition-all disabled:opacity-50 group"
+                        >
+                          <div className="w-14 h-14 rounded-full bg-blue-900 group-hover:bg-blue-800 flex items-center justify-center text-white font-bold text-base transition-colors shadow-sm">
+                            {action.initials}
                           </div>
-                          <p className="text-xs text-gray-500 leading-relaxed">{action.description}</p>
+                          <div className="text-center">
+                            <p className="text-xs font-bold text-gray-900 leading-tight">{action.memberName}</p>
+                            <p className="text-xs text-gray-400 mt-0.5">{action.role}</p>
+                          </div>
                         </button>
-                      );
-                    })}
+                      ))}
+                    </div>
                   </div>
                 )}
+
                 {isLoading && (
-                  <div className="flex justify-start">
-                    <div className="bg-gray-100 text-gray-900 px-5 py-3 rounded-2xl rounded-bl-none">
-                      <div className="flex gap-2">
-                        <div className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="flex items-end gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-blue-900 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">DT</div>
+                    <div className="bg-gray-100 px-4 py-3 rounded-2xl rounded-bl-sm">
+                      <div className="flex gap-1.5 items-center h-4">
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.15s' }}></div>
+                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.3s' }}></div>
                       </div>
                     </div>
                   </div>
                 )}
                 <div ref={messagesEndRef} />
               </div>
-              <form onSubmit={handleSendMessage} className="flex gap-3">
-                <Input type="text" placeholder="Type who you want to talk to or ask a question..." value={input} onChange={(e) => setInput(e.target.value)} disabled={isLoading} className="flex-1 text-sm border border-gray-300 bg-white rounded-full px-5 py-3 focus:outline-none focus:border-blue-900 focus:ring-2 focus:ring-blue-100 transition-all" />
-                <Button type="submit" disabled={isLoading || !input.trim()} className="bg-blue-900 hover:bg-blue-800 active:bg-blue-950 text-white px-6 py-3 rounded-full font-medium transition-all shadow-sm hover:shadow-md disabled:opacity-50"><Send size={18} /></Button>
-              </form>
+
+              {/* Input */}
+              <div className="pt-4 flex-shrink-0">
+                <form onSubmit={handleSendMessage} className="flex gap-3 items-center bg-gray-50 border border-gray-200 rounded-2xl px-4 py-2.5 shadow-sm focus-within:border-blue-300 focus-within:ring-2 focus-within:ring-blue-100 transition-all">
+                  <Input
+                    type="text"
+                    placeholder="Type who you want to talk to or ask a question..."
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    disabled={isLoading}
+                    className="flex-1 text-sm bg-transparent border-0 shadow-none focus-visible:ring-0 px-0 py-0 placeholder:text-gray-400"
+                  />
+                  <Button
+                    type="submit"
+                    disabled={isLoading || !input.trim()}
+                    className="bg-blue-900 hover:bg-blue-800 text-white w-9 h-9 rounded-xl p-0 flex items-center justify-center flex-shrink-0 disabled:opacity-40 transition-all"
+                  >
+                    <Send size={15} />
+                  </Button>
+                </form>
+              </div>
             </div>
           )}
 
@@ -428,6 +480,9 @@ export default function ChatPage() {
                       <p className="text-white text-sm font-semibold leading-snug">
                         Project Design: Design.md (AI/spec-driven), Implementation Plan, and Base Infrastructure
                       </p>
+                      <p className="text-gray-400 text-xs leading-relaxed">
+                        Ensures the team has a clear, structured blueprint before writing code — reducing wasted effort, misaligned features, and last-minute reworks by defining the architecture and plan upfront.
+                      </p>
                     </div>
 
                     {/* Week 7 */}
@@ -440,6 +495,9 @@ export default function ChatPage() {
                       </div>
                       <p className="text-white text-sm font-semibold leading-snug">
                         Interim Working Solution
+                      </p>
+                      <p className="text-gray-400 text-xs leading-relaxed">
+                        Delivers a functional prototype early so the team can test real behavior, gather feedback, and catch issues while there&apos;s still time to fix them before the final submission.
                       </p>
                     </div>
                   </div>
@@ -484,35 +542,35 @@ export default function ChatPage() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-gradient-to-t from-gray-50 to-white border-t border-gray-200 mt-8">
-        <div className="max-w-5xl mx-auto px-8 py-10">
-          <div className="grid grid-cols-3 gap-12 mb-8">
+      <footer className="bg-gray-50 border-t border-gray-200">
+        <div className="max-w-5xl mx-auto px-8 py-5 flex flex-col gap-3">
+          <div className="grid grid-cols-3 gap-8">
             <div>
-              <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">AI Chat Digital Twin</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="font-medium">John Michael Talbo</li>
-                <li className="font-medium">Arjay Pamittan</li>
-                <li className="font-medium">Marc Ruben Lucas</li>
+              <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">AI Chat Digital Twin</h3>
+              <ul className="flex flex-wrap gap-x-3 gap-y-1">
+                <li className="text-xs text-gray-600 font-medium">John Michael Talbo</li>
+                <li className="text-xs text-gray-600 font-medium">Arjay Pamittan</li>
+                <li className="text-xs text-gray-600 font-medium">Marc Ruben Lucas</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">UI</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="font-medium">Aeron Garma</li>
-                <li className="font-medium">Prince Ethan Macadangdang</li>
-                <li className="font-medium">Peter Cauan</li>
-                <li className="font-medium">Michael Josh Jacinto</li>
+              <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">UI</h3>
+              <ul className="flex flex-wrap gap-x-3 gap-y-1">
+                <li className="text-xs text-gray-600 font-medium">Aeron Garma</li>
+                <li className="text-xs text-gray-600 font-medium">Prince Ethan Macadangdang</li>
+                <li className="text-xs text-gray-600 font-medium">Peter Cauan</li>
+                <li className="text-xs text-gray-600 font-medium">Michael Josh Jacinto</li>
               </ul>
             </div>
             <div>
-              <h3 className="text-sm font-bold text-gray-900 mb-4 uppercase tracking-wider">Database Back End</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li className="font-medium">Aaron Clerf Sarambao</li>
-                <li className="font-medium">Christian Jerald Martinez</li>
+              <h3 className="text-xs font-bold text-gray-500 mb-2 uppercase tracking-wider">Database Back End</h3>
+              <ul className="flex flex-wrap gap-x-3 gap-y-1">
+                <li className="text-xs text-gray-600 font-medium">Aaron Clerf Sarambao</li>
+                <li className="text-xs text-gray-600 font-medium">Christian Jerald Martinez</li>
               </ul>
             </div>
           </div>
-          <div className="border-t border-gray-200 pt-6 text-xs text-gray-500 text-center">
+          <div className="border-t border-gray-200 pt-3 text-xs text-gray-400 text-center">
             <p>Built with precision. Powered by AI. © 2024 Digital Twin</p>
           </div>
         </div>
