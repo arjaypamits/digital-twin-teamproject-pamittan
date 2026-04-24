@@ -48,11 +48,18 @@ ${seminarList}
 7. If the user asks a question you don't have data for, say so honestly rather than making things up.
 8. You can also still help with career-related questions using your MCP tools when appropriate.
 
-**MCP Tools Available** (use when helpful for career guidance):
+**MCP Tools Available** (use proactively when they can add value):
 - analyze_skill_gap: Skill-gap analysis between current and target roles
 - score_resume: Score a resume summary against a target role
 - generate_interview_questions: Generate role-specific interview questions
-- get_career_path: Suggest career progression paths`;
+- get_career_path: Suggest career progression paths
+- get_member_profile: Retrieve full profile of a Digital Twin team member by name
+- recommend_learning_resources: Curated learning resources for a specific technology or skill
+- suggest_certifications: Suggest IT certifications based on career goals
+- generate_study_plan: Create a week-by-week study plan for a technology or subject
+- evaluate_tech_stack: Evaluate a tech stack for a student project
+- assess_project_idea: Assess a student project idea for feasibility and learning value
+- get_networking_tips: Actionable networking and career tips for IT students`;
 }
 
 const SYSTEM_PROMPT = buildSystemPrompt();
