@@ -70,6 +70,7 @@ const EMPTY_FORM: Omit<Member, 'id'> = {
 
 export default function ChatPage() {
   const [currentPage, setCurrentPage] = useState<PageView>('home');
+  const [scrolled, setScrolled] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       id: '1',
@@ -81,6 +82,15 @@ export default function ChatPage() {
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return;
+    const onScroll = () => setScrolled(el.scrollTop > 10);
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
 
   // Persona state
   const [members, setMembers] = useState<Member[]>([]);
@@ -174,7 +184,7 @@ export default function ChatPage() {
   return (
     <div className="flex flex-col h-screen bg-white">
       {/* Header */}
-      <header className="bg-gradient-to-b from-white to-gray-50 border-b border-gray-200">
+      <header className={`bg-white border-b border-gray-200 sticky top-0 z-40 transition-shadow duration-200 ${scrolled ? 'shadow-md' : 'shadow-none'}`}>
         <div className="max-w-5xl mx-auto px-8 py-5 flex items-center justify-between">
           <div className="flex items-center gap-4 cursor-pointer" onClick={() => setCurrentPage('home')}>
             <div className="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-base">DT</div>
@@ -203,7 +213,7 @@ export default function ChatPage() {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col w-full px-8 py-6 overflow-hidden">
+      <main ref={mainRef} className="flex-1 flex flex-col w-full px-8 py-6 overflow-auto">
         <div className="max-w-5xl mx-auto w-full flex flex-col h-full">
 
           {/* HOME PAGE */}
@@ -250,6 +260,9 @@ export default function ChatPage() {
                       }`}>
                         {message.text}
                       </div>
+                      <span className="text-[10px] text-gray-400 px-1">
+                        {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      </span>
                     </div>
                   </div>
                 ))}
@@ -331,7 +344,28 @@ export default function ChatPage() {
               </div>
 
               {membersLoading ? (
-                <div className="flex justify-center py-12"><div className="flex gap-2"><div className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce"></div><div className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div><div className="w-2.5 h-2.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div></div></div>
+                <div className="flex flex-col gap-6">
+                  {[3, 4, 2].map((count, gi) => (
+                    <div key={gi}>
+                      <div className="h-3 w-32 bg-gray-200 rounded animate-pulse mb-3" />
+                      <div className="grid grid-cols-4 gap-4">
+                        {Array.from({ length: count }).map((_, i) => (
+                          <div key={i} className="bg-white border border-gray-100 rounded-xl p-4 flex flex-col gap-3">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-full bg-gray-200 animate-pulse flex-shrink-0" />
+                              <div className="flex flex-col gap-1.5 flex-1">
+                                <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4" />
+                                <div className="h-2.5 bg-gray-100 rounded animate-pulse w-1/2" />
+                              </div>
+                            </div>
+                            <div className="h-5 bg-gray-100 rounded-full animate-pulse w-2/3" />
+                            <div className="h-2.5 bg-gray-100 rounded animate-pulse w-full" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               ) : (
                 departments.map((dept) => {
                   const deptMembers = members.filter((m) => m.department === dept);
